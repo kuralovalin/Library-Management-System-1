@@ -1,15 +1,16 @@
 import java.util.Arrays;
 import java.util.Random;
-public class SkipList<T extends Comparable<? super T>> implements SkipListInterface<T>{
+public class SkipList<E extends Comparable> implements SkipListInterface<E>{
 
-    private SLNode<T> head;
+    private SLNode<E> head;
     private int maxLevel;
     private int size;
     private int maxCap;
-
     private static final double LOG2 = Math.log(2.0);
     private Random rand;
     private static final int MIN = Integer.MIN_VALUE;
+
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     public SkipList() {
         rand = new Random();
@@ -20,11 +21,11 @@ public class SkipList<T extends Comparable<? super T>> implements SkipListInterf
     }
 
     @Override
-    public boolean remove(T target) {
-        SLNode<T>[] pred = search(target);
+    public boolean remove(E target) {
+        SLNode<E>[] pred = search(target);
         if( pred[0].links[0].data.equals(target) ){
             --size;
-            SLNode<T> temp = pred[0];
+            SLNode<E> temp = pred[0];
             for( int i = 0; i<temp.links.length; ++i ){
 
                 pred[i].links[i] = temp.links[i];
@@ -35,9 +36,9 @@ public class SkipList<T extends Comparable<? super T>> implements SkipListInterf
     }
 
     @Override
-    public boolean insert(T data) {
+    public boolean insert(E data) {
         ++size;
-        SLNode<T> pred[] = search(data);
+        SLNode<E> pred[] = search(data);
 
         if(size > maxCap){
             maxLevel ++;
@@ -47,28 +48,29 @@ public class SkipList<T extends Comparable<? super T>> implements SkipListInterf
             pred[maxLevel-1] = head;
         }
 
-        SLNode<T> new_node = new SLNode<>(data,logRandom());
+        SLNode<E> new_node = new SLNode<>(data,logRandom());
         for(int i = 0; i<new_node.links.length; ++i) {
             new_node.links[i] = pred[i].links[i];
             pred[i].links[i] = new_node;
         }
         pred[0].links[0] = new_node;
-
         return true;
     }
 
     private int computeMaxCap(){
         return (int)Math.pow(2,maxLevel)-1;
     }
+
     /**
      * returns the value if it is inside of the Skip list, null otherwise, uses the search private method
      * @param data data to be searched
      * @return returns the data or null if not found
      */
     @Override
-    public T find(T data) {
-        SLNode<T>[] pred = search(data);
-        if(pred[0].links[0] != null && pred[0].links[0].data.compareTo(data)==0)
+    public E find(E data) {
+
+        SLNode<E>[] pred = search(data);
+        if(pred[0].links[0] != null && ((Student)pred[0].links[0].data).compareTo(data)==0)
             return data;
         else
             return null;
@@ -80,9 +82,10 @@ public class SkipList<T extends Comparable<? super T>> implements SkipListInterf
      * @return array of predecing nodes(links)
      */
     @SuppressWarnings("unchecked")
-    private SLNode<T>[] search(T target){
-        SLNode<T>[] pred = new SLNode[maxLevel];
-        SLNode<T> current = head;
+    private SLNode<E>[] search(E target){
+        SLNode<E>[] pred = new SLNode[maxLevel];
+        SLNode<E> current = head;
+
         for(int i = current.links.length-1; i>=0; --i){
             while(current.links[i] != null && current.links[i].data.compareTo(target)<0)
                 current = current.links[i];
@@ -106,24 +109,30 @@ public class SkipList<T extends Comparable<? super T>> implements SkipListInterf
     @SuppressWarnings("rawtypes")
     @Override
     public String toString() {
-            StringBuilder sb = new StringBuilder();
-            SLNode<T> temp = head.links[0];
-            while(temp != null){
-                sb.append(temp);
-                if(temp.links[0] != null)
-                    sb.append(" ---> ");
-                temp = temp.links[0];
-            }
-            return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        SLNode<E> temp = head.links[0];
+        while(temp != null){
+            sb.append(temp);
+            if(temp.links[0] != null)
+                sb.append(" ---> ");
+            temp = temp.links[0];
         }
+        return sb.toString();
+    }
 
 
-    private static class SLNode<T>{
-        SLNode<T>[] links;
-        T data;
+    //getter
+    public int getSize() { return size; }
+    public SLNode<E> getHead() { return head; }
+
+
+
+    public class SLNode<E>{
+        SLNode<E>[] links;
+        E data;
         @SuppressWarnings("unchecked")
-        public SLNode(T data, int m){
-            links = (SLNode<T>[])new SLNode[m];//links to other nodes
+        public SLNode(E data, int m){
+            links = (SLNode<E>[])new SLNode[m];//links to other nodes
             this.data = data;//data stored
         }
 
@@ -131,7 +140,19 @@ public class SkipList<T extends Comparable<? super T>> implements SkipListInterf
         public String toString() {
             return(data.toString() + " |" + links.length + "|");
         }
+
+        public boolean hasNext() {
+            if (this.links[0] != null)
+                return true;
+            else
+                return false;
+        }
+
+        public SLNode next(){
+            return this.links[0];
+        }
     }
+
     public String printHead(){
         return head.data.toString();
     }

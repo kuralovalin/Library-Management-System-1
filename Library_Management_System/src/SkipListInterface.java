@@ -1,6 +1,6 @@
-public interface SkipListInterface<T extends Comparable<? super T> > {
-        public boolean remove(T target);
-        public boolean insert(T data);
-        public T find(T data);
+public interface SkipListInterface<E extends Comparable > {
+    public boolean remove(E target);
+    public boolean insert(E data);
+    public E find(E data);
 }
 

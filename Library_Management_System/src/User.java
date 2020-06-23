@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 public abstract class User implements UserInterface {
+
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -22,10 +23,6 @@ public abstract class User implements UserInterface {
         this.password = password;
     }
 
-    @Override
-    public void showBook() {
-        //LibrarySystem.showBook();
-    }
 
     @Override
     public void showTable() {
@@ -65,3 +62,4 @@ public abstract class User implements UserInterface {
         this.password = password;
     }
 }
+
