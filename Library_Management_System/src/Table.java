@@ -1,5 +1,3 @@
-import java.net.UnknownServiceException;
-
 /**
  * Table class which extends Inventory
  */
@@ -11,16 +9,14 @@ public class Table extends Inventory implements Comparable {
     private int breakCounter;
 
     /**
-     * Default Constructor
+     * Constructor
      */
     public Table(){
         super();
         breakCounter = 0;
     }
 
-    /**
-     * Constructor takes parameters for initializing fields.
-     */
+
     protected Table(String id, String status, Integer time) {
         super(id, status, time);
         breakCounter = 0;
@@ -34,7 +30,7 @@ public class Table extends Inventory implements Comparable {
         if(isAvailable())
             setStatus(newStatus);
         else
-            System.out.println(User.ANSI_RED + "Table has already occupied" + User.ANSI_RESET);
+            System.out.println("Table has already occupied");
     }
 
     /**
@@ -42,7 +38,7 @@ public class Table extends Inventory implements Comparable {
      */
     @Override
     public void updateTime() {
-        setTime(getTime()-1);
+        //setTime(getTime().plusMinutes(60));
     }
 
 

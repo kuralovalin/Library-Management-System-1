@@ -3,7 +3,5 @@ public class Main {
 
         LibrarySystem librarySystem = new LibrarySystem();
         librarySystem.mainMenu();
-
     }
-
 }

@@ -40,7 +40,7 @@ public abstract class Inventory implements InventoryInterface{
      */
     @Override
     public boolean isAvailable(){
-        return this.status.equals("available");
+        return this.status.equals("reserved");
     }
 
     /**
