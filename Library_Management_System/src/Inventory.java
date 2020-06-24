@@ -7,17 +7,21 @@ public abstract class Inventory implements InventoryInterface{
     /**
      * Holds ID of a book, table
      */
-    private int ID;
-
+    private String ID;
     /**
      * Holds status of a book, table
      */
-    private boolean status;
-
+    private String  status;
     /**
      * Holds time of a book, table
      */
-    private LocalDateTime time;
+    private Integer time;
+
+
+    /**
+     * Default constructor
+     */
+    public Inventory() {}
 
     /**
      * Constructor
@@ -25,29 +29,25 @@ public abstract class Inventory implements InventoryInterface{
      * @param status to be assigned
      * @param time to be assigned
      */
-    protected Inventory(int id, boolean status, LocalDateTime time) {
+    protected Inventory(String  id, String status, Integer time) {
         this.ID = id;
         this.status = status;
         this.time = time;
     }
 
     /**
-     * Default constructor
-     */
-    public  Inventory() {}
-
-    /**
      * Checks whether table or book are available or not
      */
     @Override
     public boolean isAvailable(){
-        return status;
+        return this.status.equals("available");
     }
+
     /**
      * Changes status of a book,table
      */
     @Override
-    public abstract void changeStatus();
+    public abstract void changeStatus(String newStatus);
 
     /**
      * Updates time of a book, table
@@ -59,26 +59,22 @@ public abstract class Inventory implements InventoryInterface{
     /**
      * Setters and getters
      */
-    public int getID() {
+    public String getID() {
         return ID;
     }
-
-    public void setID(int ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
-    public boolean getStatus() {
+    public String  getStatus() {
         return status;
     }
-
-    public void setStatus(boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
-
-    public LocalDateTime getTime() {
+    public Integer getTime() {
         return time;
     }
-
-    public void setTime(LocalDateTime time) {
+    public void setTime(Integer time) {
         this.time = time;
     }
 

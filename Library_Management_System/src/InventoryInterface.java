@@ -18,6 +18,6 @@ public interface InventoryInterface {
     /**
      * Changes status of a table or book
      */
-    public void changeStatus();
+    public void changeStatus(String newStatus);
 
 }
