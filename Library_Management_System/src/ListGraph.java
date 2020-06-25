@@ -18,6 +18,7 @@ public class ListGraph extends AbstractGraph {
         for(int i = 0; i < numV; i++){
             edges[i] = new LinkedList<Edge>();
         }
+        // initialize to map
         Floor floor0right = new Floor(0,"floor 0 right side",0);
         Floor floor0left = new Floor(1,"floor 0 left side",10);
         Floor floor1right = new Floor(2,"floor 1 right side",20);
