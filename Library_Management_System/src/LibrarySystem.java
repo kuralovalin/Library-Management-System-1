@@ -556,7 +556,7 @@ public class LibrarySystem {
         System.out.println(User.ANSI_RED+ "This book is not in library " + User.ANSI_RESET);
 
     }
-    
+
     //-LIBRARIAN (BOOK AND TABLE)--------------------------------------------------------------------------
     /**
      *Check Id if This id is taken or not
@@ -571,6 +571,7 @@ public class LibrarySystem {
 
     /**
      * Add book if Id is taken it sends message.
+     * if book Id isn't taken add book to tree
      *
      * @param a the a
      */
