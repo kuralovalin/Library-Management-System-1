@@ -2,6 +2,9 @@ import java.util.*;
 
 class MultiMap<K, V>
 {
+    /**
+     * Map to hold datas
+     */
     private Map<K, Collection<V>> map = new HashMap<>();
 
     /**

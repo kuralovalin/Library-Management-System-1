@@ -33,10 +33,19 @@ public class ListGraph extends AbstractGraph {
         insert(floor0left,floor1left);
         insert(floor1left,floor2left);
     }
-
+    /***
+     * @param source The source vertex
+     * @param dest The destination vertex
+     * @return true if is a edge from source to dest
+     */
     public boolean isEdge(Floor source, Floor dest){
         return edges[source.getFloorNumber()].contains(new Edge(source, dest));
     }
+    /***
+     * A new edge is created with source and dest. then this edge graph is also saved in the appropriate place.
+     * @param source start vertex
+     * @param dest finish vertex
+     */
     public void insert(Floor source, Floor dest){
         Edge edge = new Edge(source,dest);
         edges[edge.getSource().getFloorNumber()].add(edge);
@@ -46,6 +55,9 @@ public class ListGraph extends AbstractGraph {
                     edge.getWeight()));
         }
     }
+    /***
+     * @param edge insert edge suitable place
+     */
     public void insert(Edge edge){
         edges[edge.getSource().getFloorNumber()].add(edge);
         if(!isDirected()){
@@ -54,11 +66,18 @@ public class ListGraph extends AbstractGraph {
                     edge.getWeight()));
         }
     }
-
+    /***
+     * @param source The source vertex
+     * @return the iterator
+     */
     public Iterator<Edge> edgeIterator(int source){
         return edges[source].iterator();
     }
-
+    /***
+     * @param source start vertex
+     * @param dest finish vertex
+     * @return get edge from source to dest
+     */
     public Edge getEdge(Floor source, Floor dest){
         Edge target = new Edge(source, dest, Double.POSITIVE_INFINITY);
         for(Edge edge : edges[source.getFloorNumber()]){
@@ -68,7 +87,9 @@ public class ListGraph extends AbstractGraph {
         //Assert: All edges for source checked.
         return target; //Desired edge not found.
     }
-
+    /***
+     * @return the adjacency list form
+     */
     public String toString(){
         StringBuilder sb = new StringBuilder();
         int end = edges.length;
@@ -80,7 +101,12 @@ public class ListGraph extends AbstractGraph {
         }
         return sb.toString();
     }
-
+    /***
+     * breadth first navigates the nodles and returns the first parent of all vertexes.
+     * @param graph graph
+     * @param start start vertex actually 0 vertex
+     * @return the all parents
+     */
     private static int[] breadthFirstSearch(ListGraph graph,int start){
         if(start < 0 || start >= graph.getNumV()){
             System.out.println(User.ANSI_RED + "Wrong start vertex" + User.ANSI_RESET);
@@ -110,7 +136,13 @@ public class ListGraph extends AbstractGraph {
         }
         return parent;
     }
-
+    /***
+     * each node has a vertex and it has 10 tables in vertex, after giving your table number,
+     * the size gives you the shortest way to go. The first digit of the table gives the vertex of the table,
+     * the second digit gives the number of the table in that vertex.
+     * @param graph graph
+     * @param destTable destination table
+     */
     public static void map(ListGraph graph, String destTable){
         int parent[] = breadthFirstSearch(graph,0);
 

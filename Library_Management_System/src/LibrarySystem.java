@@ -1,20 +1,32 @@
-<<<<<<< HEAD
 import java.util.*;
 
 public class LibrarySystem {
 
+    /** students also registers those who are registered as students. Skip List is sorted by id.*/
     private static SkipList<Student> students;
+    /** librarians also registers those who are registered as students.*/
     private static ArrayList<Librarian> librarians;
+    /**All tables are sorted with  PriorityQueue according to the duration of the student sitting at the table.*/
     private static PriorityQueue<Table> tables;
+    /** All books coming to the system are stored in the AVL tree. While listing the AVL tree, unique ids are checked.*/
     private static AVLTree<Book> books = new AVLTree<>();
+    /**Students who want to buy a table after all tables are filled are registered in this tableReservationLine.
+     tableReservationLine is a queue.*/
     private static Queue<Student> tableReservationLine;
+    /*** Table reminder for warning*/
     static TableReminder t_reminder;
+    /**Book reminder for warning*/
     static BookReminder  b_reminder;
+    /** Library Map*/
+    private static ListGraph myGraph;
 
+    /**
+     * Default constructor of LibrarySystem
+     */
     public LibrarySystem(){
         tables = new PriorityQueue<Table>();
         tableReservationLine = new LinkedList<>();
-        initializeTableData(10);
+        initializeTableData(50);
         initializeStudentData();
         initializeBookData();
         initializeLibrarianData();
@@ -23,8 +35,8 @@ public class LibrarySystem {
     static {
         students = new SkipList<>();
         librarians = new ArrayList<>();
+        myGraph = new ListGraph(6,false);
     }
-
 
     //-STUDENT (TABLE)--------------------------------------------------------------------------
 
@@ -35,32 +47,20 @@ public class LibrarySystem {
      */
     private void initializeTableData(int capacity){
 
-        /*UNCOMMENT THIS LATER
-        for(int i=0; i<capacity ; i++){
-            String tableID = "Table" + (i+1);
-            //puts every object to priority queue
-            tables.offer(new Table(tableID, "available", 0));
-        }*/
-
-
         //Initializing table objects to priority queue
-       for(int i=0; i<capacity-3 ; i++){
+       for(int i=0; i<capacity-5 ; i++){
             String tableID = ("Table" + (Integer)(i+1));
-            //Initializing each table with -> TableX, Available, Time(now)
+            //Initializing each table with -> TableX, Reserved, Time(60)
             //puts every object to priority queue
-            tables.offer(new Table(tableID, "available", 00));
+            tables.offer(new Table(tableID, "reserved", 60));
         }
-        tables.offer(new Table("Table8", "available", 0));
-        tables.offer(new Table("Table11", "available", 0));
-        tables.offer(new Table("Table10", "available", 0));
-
-
-      /* for(int i=0; i<capacity ; i++){
-            Table t =  tables.poll();
-            //Table t = tables.getTheData().get(i);
-            System.out.println("ID: " +t.getID() + "  Status: " + t.getStatus() + "  Time: " + t.getTime() );
-
-        }*/
+        //initialize 3 table with different time values
+        tables.offer(new Table("Table46", "reserved", 20));
+        tables.offer(new Table("Table47", "reserved", 40));
+        tables.offer(new Table("Table48", "reserved", 50));
+        //initialize 2 table empty
+        tables.offer(new Table("Table49", "reserved", 30));
+        tables.offer(new Table("Table50", "available", 0));
 
     }
 
@@ -71,23 +71,34 @@ public class LibrarySystem {
     private void initializeStudentData(){
 
         students.insert(new  Student("Ezgi", "Cakir", "151044054", "gtuO"));
-        students.insert(new  Student("Alina", "Kuralova", "2", "gtuO"));
+        students.insert(new  Student("Alina", "Kuralova", "171044094", "gtuO"));
         students.insert(new  Student("Furkan", "Aydın", "3", "gtuO"));
-        students.insert(new  Student("Oguzhan", "Senturk", "4", "gtuO"));
-        students.insert(new  Student("Selimhan", "Meral", "5", "gtuO"));
+        students.insert(new  Student("Oguzhan", "Senturk", "151044067", "gtuO"));
+        students.insert(new  Student("Selimhan", "Meral", "161044009", "gtuO"));
         students.insert(new  Student("Sarwar", "Hossain", "6", "gtuO"));
     }
 
+    /**
+     * Method to initialize book datas to AVL tree according to their IDs
+     * Every book's name,author name,ID , time and status initialized
+     */
     private  void initializeBookData(){
-        books.add(new Book("R11", "Novel", "Suc ve Ceza", "Fyodor Dostoyevski", "available",0));
-        books.add(new Book("R12", "Novel", "Yer Altından Notlar", "Fyodor Dostoyevski", "available",0));
-        books.add(new Book("R21", "Novel",  "Kurt Mantolu Madonna", "Sabahattin Ali", "available" , 0));
-        books.add(new Book("R22", "Novel",  "Kuyucaklı Yusuf","Sabahattin Ali", "available" , 0 ));
-        books.add(new Book("R31", "Novel",  "Masumiyet Muzesi", "Orhan Pamuk", "available" , 0));
-        books.add(new Book("R32", "Novel",  "Dava","Franz Kafka", "available" , 0 ));
-        books.add(new Book("R34", "Novel",  "1984", "George Orwell", "available" , 0));
+        books.add(new Book("N11", "Novel", "Suc ve Ceza", "Fyodor Dostoyevski", "available",0));
+        books.add(new Book("N12", "Novel", "Yer Altından Notlar", "Fyodor Dostoyevski", "available",0));
+        books.add(new Book("S21", "Story",  "Kurt Mantolu Madonna", "Sabahattin Ali", "available" , 0));
+        books.add(new Book("S22", "Story",  "Kuyucaklı Yusuf","Sabahattin Ali", "available" , 0 ));
+        books.add(new Book("N31", "Novel",  "Masumiyet Muzesi", "Orhan Pamuk", "available" , 0));
+        books.add(new Book("N32", "Novel",  "Dava","Franz Kafka", "available" , 0 ));
+        books.add(new Book("N34", "Novel",  "1984", "George Orwell", "available" , 0));
+        books.add(new Book("H41", "History",  "Nutuk", "Mustafa Kemal Ataturk", "available" , 0));
+        books.add(new Book("S23", "Story",  "Sırca Kosk", "Sabahattin Ali", "available" , 0));
+        books.add(new Book("S24", "Story",  "Stefan Zweig", "Amok Kosucusu", "available" , 0));
     }
 
+    /**
+     * Method to initialize librarian datas to skip list according to their IDs
+     * Every librarian's name,surname,ID and password initialized
+     */
     private  void initializeLibrarianData(){
         librarians.add(new Librarian("Ali", "Boz", "1", "gtuL") );
         librarians.add(new Librarian("Idil", "Kaya", "2", "gtuL") );
@@ -128,12 +139,11 @@ public class LibrarySystem {
                         student.setMyTable(tableID); //tableID assigned to student
                         student.setTableCounter(student.getTableCounter() + 1); //table counter incremented
                         t.setStatus("reserved"); //table status updated
-                        t.setTime(t.getTime() + 60); //60 minutes
+                        t.setTime(60); //60 minutes
                         rearrangeTableOrder(); //rearrange order of tables according to times
                         student.setInLine(false); //user not waiting for table, not in the queue
                         System.out.println(User.ANSI_GREEN + tableID + " is reserved for " + student.getName()
                                 + " " + student.getSurname() + " for 1 hour." + User.ANSI_RESET);
-                        ListGraph myGraph = new ListGraph(6,false);
                         ListGraph.map(myGraph,t.getID().substring(5));
                         t_reminder = new TableReminder(t.getTime()- 10,t,student); //time reminder
                         return;
@@ -201,7 +211,7 @@ public class LibrarySystem {
 
             //table found
             if(t.getID().equals(tableID)){
-                t.setTime(60); //time extended for another 60 minutes (1 hour)
+                t.setTime(t.getTime() + 60); //time extended for another 60 minutes (1 hour)
                 rearrangeTableOrder();
                 System.out.println(User.ANSI_GREEN + tableID + "'s time extended 1 hour for student " + student.getName()
                         + " " + student.getSurname() + " (Remaining time: " + t.getTime() + ")" + User.ANSI_RESET);
@@ -215,9 +225,7 @@ public class LibrarySystem {
 
         //there is no reserved table for given student so request denied, process failed
         System.out.println(User.ANSI_RED +"Table time extension error."+ User.ANSI_RESET);
-
     }
-
 
     /**
      * Method to approve or deny leaving table
@@ -225,32 +233,40 @@ public class LibrarySystem {
      * @param student Student object to represent who wants to leave table
      */
     protected static void approveLeaveTable(Student student){
-
         String tableID = student.getMyTable(); //store student's reserved tableID
         //Iterator for table priority queue
         Iterator iter = tables.iterator();
         Table t = new Table();
-
         //searching for table according to tableID
         for(int i=0; i<tables.size(); i++){
             if(iter.hasNext())
                 //iterating to next element in priority queue
                 t = ((Table)iter.next());
-
             //table found
             if(t.getID().equals(tableID)){
                 t.setTime(0); //time initialized to 0
                 t.setStatus("available"); //status updated to available
                 System.out.println(User.ANSI_GREEN + tableID + "'s reservation is cancelled for student " +
                         student.getName() + " " + student.getSurname() + "." + User.ANSI_RESET);
+
+                if (!tableReservationLine.isEmpty()) {
+                    Student temp = tableReservationLine.poll();
+                    temp.setTableCounter(1);
+                    temp.setMyTable(tableID);
+                    t.setTime(60);
+                    t.setStatus("reserved"); //status updated to available
+                    System.out.println(User.ANSI_YELLOW + "Reservation pulled from queue for  " + t.getID() +
+                            " to " + temp.getName() + " " + temp.getSurname() + User.ANSI_RESET);
+                    t_reminder.timer.cancel();
+                    t_reminder.timer2.cancel();
+                    t_reminder = new TableReminder(t.getTime()-10,t,temp);
+                }
                 rearrangeTableOrder();
                 return;
             }
         }
-
         //Table not found, process failed
         System.out.println(User.ANSI_RED + "Leaving table error."+ User.ANSI_RESET);
-
     }
 
     /**
@@ -321,6 +337,9 @@ public class LibrarySystem {
         }
     }
 
+    /**
+     * Shows all tables with its information
+     */
     protected static void showTable(){
         Iterator iter = tables.iterator();
         Table t = new Table();
@@ -361,6 +380,9 @@ public class LibrarySystem {
         return true;
     }
 
+    /**
+     * Method to rearrange tables according to updated remaining time values
+     */
     public static void rearrangeTableOrder(){
         Table[] oldTables = new Table[tables.size()];
         int cap = tables.size();
@@ -375,6 +397,11 @@ public class LibrarySystem {
 
     //-STUDENT(BOOK) OP------------------------------------------------------------------------------------
 
+    /**
+     * Method to approve book request
+     * @param student Student object which represents student
+     * @param bookID String fpr book ID
+     */
     protected static Book acceptRejectBookRequest (Student student, String bookID) {
 
         Book book = books.find(bookID);
@@ -383,7 +410,6 @@ public class LibrarySystem {
             if(book.isAvailable()) {
                 book.changeStatus("reserved");
                 book.setTime(book.getTime() + 15);
-                student.setBookCounter(student.getBookCounter() + 1);
                 System.out.println(User.ANSI_GREEN +bookID + " is reserved for "+ student.getName()
                         + " " + student.getSurname() + " for 15 days."+ User.ANSI_RESET);
                 b_reminder = new BookReminder(book.getTime()- 5,book,student); //time reminder
@@ -400,6 +426,11 @@ public class LibrarySystem {
              return null;
     }
 
+    /**
+     * Method to approve time extend request of student
+     * @param student Student object which represents student
+     * @param bookID String fpr book ID
+     */
   protected static void approveBookTimeExtend(Student student, String bookID){
         //searching for book
       Book book = books.find(bookID);
@@ -452,8 +483,10 @@ public class LibrarySystem {
     }
 
     /**
-     * This method travel tree and add them to a list after for Id it categorize books for categories and for authors and we implemented
-     * MultiMap class for it it hold books in same Key in MultiMap and it show the book's details if this category or author doesn't exist
+     * This method travel tree and add them to a list after for Id it categorize books for categories
+     * and for authors and we implemented MultiMap class for it it hold books in same Key in MultiMap
+     * and it show the book's details if this category or author doesn't exist
+     *
      * it doesn't print and print error to screen
      */
     protected static void showBook(){
@@ -472,11 +505,10 @@ public class LibrarySystem {
         System.out.println(User.ANSI_BLUE+ "2) With Author"+ User.ANSI_RESET);
         System.out.println(User.ANSI_BLUE+ "3) All Books" + User.ANSI_RESET);
         System.out.println(User.ANSI_BLUE+ "4) Exit" + User.ANSI_RESET);
-        String  inp = scn.next();
+        String  inp = scn.nextLine();
 
         if(inp.equals("1")) {
             System.out.println("Please enter a category:" );
-            String buffer = scn.nextLine();
             String b = scn.nextLine();
             String x = b.substring(0, 1).toUpperCase() + b.substring(1);
             if(category.get(x.charAt(0)) != null)
@@ -486,7 +518,6 @@ public class LibrarySystem {
         }
         else if(inp.equals("2")) {
             System.out.println("Please enter a author (name and surname):" );
-            String buffer = scn.nextLine();
             String b = scn.nextLine();
             String x = b.substring(0, 1).toUpperCase() + b.substring(1);
             if(author.get(x) != null)
@@ -497,7 +528,7 @@ public class LibrarySystem {
         }
         else if(inp.equals("3")) {
             for (int i = 0; i <book.size() ; i++) {
-                System.out.println(book.get(i));
+                System.out.print(book.get(i));
             }
         }
         else if(inp.equals("4")) {
@@ -508,7 +539,11 @@ public class LibrarySystem {
             showBook();
         }
     }
-
+    /**
+     *  It search book in library with name of book and show book's details.
+     *  it convert tree as a list and find inside
+     * @param name of book
+     */
     protected static void searchBook(String name) {
         List<Book> book = books.inorderList();
         for (int i = 0; i < book.size(); i++) {
@@ -523,6 +558,17 @@ public class LibrarySystem {
     }
     
     //-LIBRARIAN (BOOK AND TABLE)--------------------------------------------------------------------------
+    /**
+     *Check Id if This id is taken or not
+     * @param id of book
+     */
+    protected static boolean CheckId(String id){
+        if(books.find(id) != null)
+            return false;
+        else
+            return true;
+    }
+
     /**
      * Add book if Id is taken it sends message.
      *
@@ -574,6 +620,15 @@ public class LibrarySystem {
     }
 
     //-MENU---------------------------------------------------------------------------
+    /***
+     * It is the main menu that appears first after the program is opened.There are 3 options.
+     * These are log in operation, sign up operation and exit. If the user enter the 1 (exit) program is shut down.
+     * If the user signs in, the sign up menu opens.
+     * If the log is done, the student or employee is asked.
+     * There are also 3 options for log in operation. These are student log in, librarian log in and exit.
+     * If the user does the student operation, the student menu opens.
+     * If the Librarian process, the librarian menu opens. Return to the upper menu of Exit course
+     */
     public void mainMenu(){
         Scanner sb = new Scanner(System.in);
         System.out.println(User.ANSI_YELLOW + "---------------------------------" + User.ANSI_RESET);
@@ -620,6 +675,17 @@ public class LibrarySystem {
                 break;
         }
     }
+    /***
+     * If the incoming student object is not null, the transaction is performed.
+     * There are 3 basic operations that the student will do.
+     * The first is exit. If the user says exit, he returns to a top menu.
+     * The second is Book Option. If the user chooses the Book Option option, the Book menu opens.
+     * The third basic operation of the student is the Table option,
+     * if the table option is selected, the table menu opens and finally, in the profile option,
+     * the student can view and change their profile information.
+     * @param type student or librarian
+     * @param student real object object of the student who program user.
+     */
     private void studentMenu(String type,Student student){
         if(student == null){
             student = (Student) logIn(type);
@@ -657,6 +723,12 @@ public class LibrarySystem {
 
         }
     }
+    /***
+     * In profile option, all profile information is printed on the screen. There are three options.
+     * These are name, surname and password change. With the option 1, the password is changed with the name 2 option and
+     * the last name 3 option. 4 option to exit and return to the upper menu
+     * @param user user object to process
+     */
     public void profileOption(User user){
         System.out.println(User.ANSI_GREEN + "\nProfile Information\n" + User.ANSI_RESET);
         System.out.println(User.ANSI_GREEN +"Name:      "+user.getName() + User.ANSI_RESET);
@@ -696,6 +768,18 @@ public class LibrarySystem {
                 break;
         }
     }
+    /***
+     * There are 6 options for the Student Book menu. 1 show book.
+     * You can see all the books in the library with the show book option.
+     * 2 Search Book. With the Search Book option, you can search by the name of the author,
+     * by the name of the book, or by the category of books. 3 Request Book.
+     * With Request Book, you may want to buy a book that is also in the library.
+     * If you are eligible to request a book, it is given to you. 4 Extend Time Book.
+     * Each book is given for 15 days. In this option, you can extend the book's stay. 5 Show Book info.
+     * With this option, you can access the information of your books and the duration of the book. 6 exit.
+     * With the exit option you will return to the upper menu
+     * @param user user object to process
+     */
     private void studentBookOption(Student user){
         System.out.println(User.ANSI_YELLOW + "------------------" + User.ANSI_RESET);
         System.out.println(User.ANSI_YELLOW + "|  BOOK OPTIONS  |"  + User.ANSI_RESET);
@@ -732,6 +816,15 @@ public class LibrarySystem {
                 break;
         }
     }
+    /***
+     * There are 7 options for the student table menu.
+     * You can see all tables in the library with 1 show table show table option.
+     * With the 2 reserve table option, you can request any available table. 3 You can take a break with Take a break.
+     * 4 You can leave the table with Leave table. With 5 extend time tables, you can extend your stay on the table.
+     * The duration of stay at the table for each user is 1 hour.
+     * With Check table time, you can learn the time you stay at the table. With 7 exit you will return to the upper menu.
+     * @param user user object to process
+     */
     private void studentTableOption(Student user){
         System.out.println(User.ANSI_YELLOW + "-------------------" + User.ANSI_RESET);
         System.out.println(User.ANSI_YELLOW + "|  TABLE OPTIONS  |"  + User.ANSI_RESET);
@@ -773,6 +866,13 @@ public class LibrarySystem {
                 break;
         }
     }
+    /***
+     * The librarian menu has 3 options. With 1 open your profile, you can view and edit all your profile information.
+     * With 2 Book option menu, you go to the librarian's book menu.
+     * With 3 table options, you go to the librarian's table menu. With 4 exits you will return to the upper menu
+     * @param type student or librarian
+     * @param librarian user object to process
+     */
     private void librarianMenu(String type,Librarian librarian){
         if(librarian == null){
             librarian = (Librarian) logIn(type);
@@ -810,7 +910,13 @@ public class LibrarySystem {
                 break;
         }
     }
-
+    /***
+     * There are 5 operations you can do in the librarian book menu.
+     * With 1 show books, you can see all the books in the library.
+     * With 2 search book, you can search for a specific book. With 3 add books, you can add new books to the library.
+     * With 4 exit you will return to the upper menu.
+     * @param user user object to process
+     */
     private void librarianBookOption(Librarian user){
         System.out.println(User.ANSI_YELLOW + "------------------" + User.ANSI_RESET);
         System.out.println(User.ANSI_YELLOW + "|  BOOK OPTIONS  |"  + User.ANSI_RESET);
@@ -844,6 +950,12 @@ public class LibrarySystem {
                 break;
         }
     }
+    /***
+     * There are 3 transactions in the Librarian table option menu.
+     * With 1 show table you can see all tables and their status. With 2 cancel table reservation,
+     * you can cancel the reservation of a student with a table. With 3 exit you will return to the upper menu.
+     * @param user user object to process
+     */
     private void librarianTableOption(Librarian user){
         System.out.println(User.ANSI_YELLOW + "-------------------" + User.ANSI_RESET);
         System.out.println(User.ANSI_YELLOW + "|  TABLE OPTIONS  |"  + User.ANSI_RESET);
@@ -869,7 +981,11 @@ public class LibrarySystem {
     }
 
     //-----------------------------------------------------------------
-
+    /***
+     * 3 options are registered to the system with the sign up menu, one of them is student.
+     * With Student, you enroll in the student system.
+     * secondly, with librarian you register to the librarian system and thirdly with exit you return to 1 upper menu
+     */
     public void signUp(){
         String  type;
         Scanner sb = new Scanner(System.in);
@@ -903,7 +1019,13 @@ public class LibrarySystem {
                 break;
         }
     }
-
+    /***
+     * It takes input from the sign up menu as a parameter.
+     * If parameter 1 is the student, the parameter 2 is the librarian.
+     * Name surname password id information is entered. In case any input is entered, exit is returned to the upper menu.
+     * @param type User user is abstract class parent for student class and librarian class
+     * @return to user in student list or librarian list.
+     */
     private User createUser(String type){
         String name;
         String surname;
@@ -958,7 +1080,14 @@ public class LibrarySystem {
             return (User) new Librarian(name, surname, ID, password);
         }
     }
-
+    /***
+     * In accordance with the information received, the user object to be processed is returned.
+     * First of all, the id entered by the user is checked in the system. and in total they have 4 rights to enter id.
+     * If the entered id is in the system, that object temp is thrown to a reference. password control is done.
+     * The password received from the user is checked with the password in temp. the user has a total of 4 rights.
+     * @param type student or librarian
+     * @return  user object to process
+     */
     public User logIn(String type){
 
         System.out.println(User.ANSI_BLUE +"In case you want to leave, please write 'exit'.\n"+ User.ANSI_RESET );
@@ -976,7 +1105,15 @@ public class LibrarySystem {
             }
         }
     }
-
+    /***
+     * It takes 2 parameters. 1. Have the status of the user.
+     * If the user is a student, a search is made for the student skip list with the entered id.
+     * If the object is found, it is returned. If not found, it is null returned. for the user librarian,
+     * a search is made in the arraylist.
+     * @param type student or librarian
+     * @param i right to try
+     * @return user object or null
+     */
     private User IDControl(String type,int i){
 
         if(i == 4){
@@ -1013,7 +1150,13 @@ public class LibrarySystem {
         System.out.println(User.ANSI_RED + "Wrong ID. Your remaining ID retry: " +(4-i-1) + User.ANSI_RESET);
         return IDControl(type,i+1);
     }
-
+    /***
+     * The password entered with the password that comes as a parameter is checked.
+     * If passwords are the same, true is different, false is returned. The total trial right is 4.
+     * @param temp user object whose password will be checked
+     * @param i right to try
+     * @return return true if equals password else false.
+     */
     private boolean passwordControl(User temp,int i){
         Scanner sb = new Scanner(System.in);
         System.out.println(User.ANSI_BLUE + "Enter password please" + User.ANSI_RESET );
@@ -1034,776 +1177,3 @@ public class LibrarySystem {
     }
 
 }
-=======
-import java.util.*;
-
-public class LibrarySystem {
-
-    private static SkipList<Student> students;
-    private static ArrayList<Librarian> librarians;
-    private static PriorityQueue<Table> tables;
-    static AVLTree<Book> books = new AVLTree<>();
-    private static Queue<Student> tableReservationLine;
-
-    public LibrarySystem(){
-        tables = new PriorityQueue<Table>();
-        tableReservationLine = new LinkedList<>();
-        initializeTableData(tables,10);
-        initializeStudentData();
-    }
-
-    static {
-        students = new SkipList<>();
-        librarians = new ArrayList<>();
-    }
-
-
-    //-STUDENT (TABLE)--------------------------------------------------------------------------
-
-    /**
-     * Method to initialize table data to priority queue according to their time values
-     * Every table status is "available" and time is 0 at the beginning
-     * @param tables Priority Queue to store table objects
-     * @param capacity Integer for priority queue capacity (number of tables)
-     */
-    private void initializeTableData(PriorityQueue<Table> tables, int capacity){
-
-        /*UNCOMMENT THIS LATER
-        for(int i=0; i<capacity ; i++){
-            String tableID = "Table" + (i+1);
-            //puts every object to priority queue
-            tables.offer(new Table(tableID, "available", 0));
-        }*/
-
-
-        //Initializing table objects to priority queue
-       for(int i=0; i<capacity-3 ; i++){
-            String tableID = "Table" + (i+1);
-            //Initializing each table with -> TableX, Available, Time(now)
-            //puts every object to priority queue
-            tables.offer(new Table(tableID, "reserved", 60));
-        }
-        tables.offer(new Table("Table8", "reserved", 50));
-        tables.offer(new Table("Table9", "reserved", 40));
-        tables.offer(new Table("Table10", "available", 0));
-
-       /* UNCOMMENT TO PRINT
-       for(int i=0; i<capacity ; i++){
-            Table t =  tables.poll();
-            //Table t = tables.getTheData().get(i);
-            System.out.println("ID: " +t.getID() + "  Status: " + t.getStatus() + "  Time: " + t.getTime() );
-
-        }*/
-
-    }
-
-    /**
-     * Method to initialize student datas to skip list according to their IDs
-     * Every student's name,surname,ID and password initialized
-     */
-    private void initializeStudentData(){
-
-        students.insert(new  Student("Ezgi", "Cakir", "1", "X1"));
-        students.insert(new  Student("Alina", "Kuralova", "2", "X2"));
-        students.insert(new  Student("Furkan", "Aydın", "3", "X3"));
-        students.insert(new  Student("Oguzhan", "Senturk", "4", "X4"));
-        students.insert(new  Student("Selimhan", "Meral", "5", "X5"));
-        students.insert(new  Student("Sarwar", "Hossain", "6", "X6"));
-    }
-
-    /**
-     * Method to approve or deny table reservation for student request
-     * If there is empty table at the library it takes TableID then according to table's status approves or denies reservation
-     * If there is no empty table at the library it asks user whether wait or not
-     * then according to answer adds user to waiting queue or not
-     * @param student Student object to represent who wants to reserve table
-     */
-    protected static void acceptRejectTableReservation(Student student){
-        //Iterator for table priority queue
-        Iterator iter = tables.iterator();
-        Table t = new Table();
-
-        //There is/are empty table(s)
-        if(!isFull()) {
-            //scanning user input for tableId in order to reserve
-            Scanner scan =  new Scanner(System.in);
-            System.out.println(" Enter tableID to reserve.");
-            String tableID = scan.next();
-
-            //searching for table in priority queue
-            for (int i = 0; i < tables.size(); i++) {
-
-                //iterating to next element in priority queue
-                if (iter.hasNext())
-                    t = ((Table) iter.next());
-
-                //given table found and its status is available
-                if (t.getID().equals(tableID)) {
-                    if (t.getStatus().equals("available")) {
-                        student.setMyTable(tableID); //tableID assigned to student
-                        student.setTableCounter(student.getTableCounter() + 1); //table counter incremented
-                        t.setStatus("reserved"); //table status updated
-                        t.setTime(60); //60 minutes
-                        student.setInLine(false); //user not waiting for table, not in the queue
-                        System.out.println(tableID + " is reserved for " + student.getName() + " " + student.getSurname() + " for 1 hour.");
-                        return;
-                    }
-                    //given table not available (status is reserved or on break)
-                    else {
-                        System.out.println("Reservation denied by system.\nGiven " + tableID + " is already occupied.");
-                        return;
-                    }
-                }
-            }
-
-            //Table ID not valid
-            System.out.println("Reservation denied by system.\nGiven " + tableID + " is not exist in library.");
-        }
-
-        //All tables occupied
-        //Asks user to wait for table, according to answer add user to waiting queue
-        else{
-            System.out.println("There is no empty table at the library." + tables.peek().getID() + " has " + tables.peek().getTime() + "minutes.Would you like to wait?(Y/N)");
-            //Scanning user input
-            Scanner input =  new Scanner(System.in);
-            String wait = input.next();
-
-            //user answer is YES for waiting queue
-            //adding to waiting queue
-            if(wait.equals("Y") || wait.equals("y")) {
-                //user already in the waiting queue
-                if(student.getInLine())
-                    System.out.println("You are already in the waiting line for table.Please keep waiting.");
-                //user added to waiting queue
-                else {
-                    tableReservationLine.add(student);
-                    System.out.println("You are in the waiting line for table.");
-                    student.setInLine(true);
-                }
-            }
-            //user answer is NO for waiting queue
-            else{
-                System.out.println("Table reservation canceled.");
-            }
-        }
-    }
-
-    /**
-     * Method to approve or deny table reservation time extend for 1 hour
-     * If there is table already reserved for given student it approves , otherwise denies
-     * @param student Student object to represent who wants to extend table time
-     */
-    protected static void approveTableTimeExtend(Student student){
-
-        String tableID = student.getMyTable(); //store student's reserved tableID
-        //Iterator for table priority queue
-        Iterator iter = tables.iterator();
-        Table t = new Table();
-
-        //searching for table according to tableID
-        for(int i=0; i<tables.size(); i++){
-            //iterating to next element in priority queue
-            if(iter.hasNext())
-                t = ((Table)iter.next());
-
-            //table found
-            if(t.getID().equals(tableID)){
-                t.setTime(t.getTime() + 60); //time extended for another 60 minutes (1 hour)
-                System.out.println(tableID + "'s time extended 1 hour for student " + student.getName() + " " + student.getSurname() + " (Remaining time: " + t.getTime() + ")");
-                return;
-            }
-        }
-
-        //there is no reserved table for given student so request denied, process failed
-        System.out.println("Table time extension error.");
-
-    }
-
-
-    /**
-     * Method to approve or deny leaving table
-     * If there is already reserved table for given student approves , otherwise denies
-     * @param student Student object to represent who wants to leave table
-     */
-    protected static void approveLeaveTable(Student student){
-
-        String tableID = student.getMyTable(); //store student's reserved tableID
-        //Iterator for table priority queue
-        Iterator iter = tables.iterator();
-        Table t = new Table();
-
-        //searching for table according to tableID
-        for(int i=0; i<tables.size(); i++){
-            if(iter.hasNext())
-                //iterating to next element in priority queue
-                t = ((Table)iter.next());
-
-            //table found
-            if(t.getID().equals(tableID)){
-                t.setTime(0); //time initialized to 0
-                t.setStatus("available"); //status updated to available
-                System.out.println(tableID + "'s reservation is cancelled for student " + student.getName() + " " + student.getSurname() + ".");
-                return;
-            }
-        }
-
-        //Table not found, process failed
-        System.out.println("Leaving table error.");
-
-    }
-
-    /**
-     * Method to approve or deny taking break
-     * If there is already reserved table for given student approves, otherwise denies request
-     * @param student Student object to represent who wants to take a break
-     */
-    protected static void approveTableBreak(Student student){
-
-        String tableID = student.getMyTable(); //store student's reserved tableID
-        //Iterator for table priority queue
-        Iterator iter = tables.iterator();
-        Table t = new Table();
-
-        //searching for table according to tableID
-        for(int i=0; i<tables.size(); i++){
-
-            if(iter.hasNext())
-                //iterating to next element in priority queue
-                t = ((Table)iter.next());
-
-            //table found
-            if(t.getID().equals(tableID)){
-
-                //tables remaining time higher than 10
-                //valid for break
-                if(t.getTime()>10) {
-                    t.setStatus("on break"); //status updated to on break
-                    student.setOnBreak(true);
-                    System.out.println(tableID + "'s status changed, you have 10 minutes for break.\n In case of violation librarian could drop your reservation.");
-                }
-                //tables remaining time less than 10
-                //not valid  for break
-                else {
-                    System.out.println(tableID + "'s remaining time is " + t.getTime() + " minutes.\nEither you can extend time before break or you can leave the table.");
-                }
-                return;
-            }
-        }
-
-        System.out.println("Take break for table error.");
-
-    }
-
-    /**
-     * Method to print remaining time for given table
-     * @param tableID String for table ID
-     */
-    protected static void checkTableTime(String tableID){
-
-        //Iterator for table priority queue
-        Iterator iter = tables.iterator();
-        Table t = new Table();
-
-        //searching for table according to tableID
-        for(int i=0; i<tables.size(); i++) {
-
-            if (iter.hasNext()) {
-                //iterating to next element in priority queue
-                t = ((Table) iter.next());
-
-                //table found
-                if (t.getID().equals(tableID))
-                    System.out.println("Remaining time for " + tableID + ": " + t.getTime() + " minutes");
-            }
-        }
-    }
-
-
-    /**
-     * Helper method for acceptRejectTableReservation method
-     * Method to determine all tables are full or not
-     * @return true if all tables full, otherwise false
-     */
-    private static boolean isFull(){
-        //Iterator for table priority queue
-        Iterator iter = tables.iterator();
-        Table t = new Table();
-
-        //searching for table according to tableID
-        for(int i=0; i<tables.size(); i++) {
-
-            if (iter.hasNext()) {
-                //iterating to next element in priority queue
-                t = ((Table) iter.next());
-
-                //there is an empty table
-                if (t.getTime() == 0)
-                    return false;
-            }
-        }
-        //there is no empty table
-        return true;
-    }
-
-
-    //-LIBRARIAN (BOOK AND TABLE)--------------------------------------------------------------------------
-    /**
-     * Add book if Id is taken it sends message.
-     *
-     * @param a the a
-     */
-    static void addBook(Book a) {
-
-        if (books.contains(a)) {
-            System.out.println("This Id has been taken");
-        } else {
-            books.add(a);
-            System.out.println(a + " has been added to the system");
-        }
-
-    }
-
-    /**
-     * Remove book.
-     *
-     * @param b the b
-     */
-    static void removeBook(Book b) {
-        System.out.println(b);
-        if (books.contains(b)) {
-            System.out.println("Removed");
-            books.delete(b);
-        } else {
-            System.out.println("This book not in the system");
-        }
-    }
-
-
-    /**
-     * Check id in Priorty queue and return this table if it isn't exist it return null
-     *
-     * @param Id the id
-     * @return the table
-     */
-    static Table cancelTableReservation(String Id) {
-        Iterator<Table> itr = tables.iterator();
-        while (itr.hasNext())
-            if (itr.next().getID() == Id)
-                return itr.next();
-
-        return null;
-    }
-
-    //-MENU---------------------------------------------------------------------------
-    public void mainMenu(){
-        Scanner sb = new Scanner(System.in);
-        System.out.println("1) Sign Up\n2) Log In\n3) Exit\n");
-        int type = sb.nextInt();
-
-        switch (type){
-            case 1 :
-                signUp();
-                mainMenu();
-                break;
-            case 2:
-                System.out.println("1) Student\n2) Librarian\n3) Exit\n");
-                type = sb.nextInt();
-                switch (type){
-                    case 1:
-                        Student student = null;
-                        studentMenu("student",student);
-                        break;
-                    case 2:
-                        Librarian librarian = null;
-                        librarianMenu("librarian",librarian);
-                        break;
-                    case 3:
-                        break;
-                    default:
-                        System.out.println("Wrong Entry");
-                        mainMenu();
-                        break;
-                }
-            case 3:
-                break;
-            default:
-                System.out.println("Wrong Entry");
-                mainMenu();
-                break;
-        }
-    }
-    private void studentMenu(String type,Student student){
-        if(student == null){
-            student = (Student) logIn(type);
-            if (student == null) {
-                System.out.println("Log in process is failed.");
-                mainMenu();
-                return;
-            }
-        }
-        System.out.println("\nStudent Menu\n");
-        System.out.println("1) Edit Profile\n2) Book Option\n3) Table Option\n4) Exit");
-        Scanner sb = new Scanner(System.in);
-        int choice = sb.nextInt();
-
-        switch (choice){
-            case 1:
-                profileOption((User) student);
-                studentMenu(type,student);
-                break;
-            case 2:
-                studentBookOption(student);
-                break;
-            case 3:
-                studentTableOption(student);
-                break;
-            case 4:
-                break;
-            default:
-                System.out.println("Wrong Entry\n");
-                studentMenu(type,student);
-
-        }
-    }
-    public void profileOption(User user){
-        System.out.println("Profile Information\n");
-        System.out.println("Name:      "+user.getName());
-        System.out.println("Surname:   "+user.getSurname());
-        System.out.println("ID:        "+user.getID());
-        System.out.println("Password:  "+user.getPassword());
-        System.out.println("\n1) Edit Name\n2) Edit Surname\n3) Edit Password\n4) Exit");
-
-        Scanner sb = new Scanner(System.in);
-        String change;
-        int choice = sb.nextInt();
-
-        switch (choice){
-            case 1:
-                System.out.println(" Enter the new name please ");
-                change = sb.next();
-                user.setName(change);
-                profileOption(user);
-                break;
-            case 2:
-                System.out.println(" Enter the new surname please ");
-                change = sb.next();
-                user.setSurname(change);
-                profileOption(user);
-                break;
-            case 3:
-                System.out.println(" Enter the new password please ");
-                change = sb.next();
-                user.setPassword(change);
-                profileOption(user);
-                break;
-            case 4:
-                break;
-            default:
-                System.out.println("Wrong choice. Please enter a new choice\n");
-                profileOption(user);
-                break;
-        }
-    }
-    private void studentBookOption(Student user){
-        System.out.println("\nBook Option Menu\n");
-        System.out.println("1) Search Book\n2) Request Book\n3) Extend Time Book\n4) Check Book Time\n5) Exit");
-        Scanner sb = new Scanner(System.in);
-        int choice = sb.nextInt();
-
-        switch (choice){
-            case 1:
-                user.searchBook(); //CHANGE PARAMETER!!!!!
-                studentBookOption(user);
-                break;
-            case 2:
-                user.requestBook(null); //CHANGE PARAMETER !!!!!!
-                studentBookOption(user);
-                break;
-            case 3:
-                user.extendTimeBook();
-                studentBookOption(user);
-                break;
-            case 4:
-                user.checkBookTime();
-                studentBookOption(user);
-                break;
-            case 5:
-                studentMenu("student",user);
-                break;
-            default:
-                System.out.println("Wrong Entry\n");
-                studentBookOption(user);
-                break;
-        }
-    }
-    private void studentTableOption(Student user){
-        System.out.println("\nTable Option Menu\n");
-        System.out.println("1) Show Table\n"+"2) Reserve Table\n" +
-                "3) Take Break\n4) Leave Table\n5) Extend Time Table\n6) Check Table Time\n7) Exit");
-        Scanner sb = new Scanner(System.in);
-        int choice = sb.nextInt();
-        String tableId;
-
-
-        switch (choice){
-            case 1:
-                user.showTable();
-                studentTableOption(user);
-                break;
-            case 2:
-                user.reserveTable();
-                studentTableOption(user);
-                break;
-            case 3:
-                user.takeBreak();
-                studentTableOption(user);
-                break;
-            case 4:
-                user.leaveTable();
-                studentTableOption(user);
-                break;
-            case 5:
-                user.extendTimeTable();
-                studentTableOption(user);
-                break;
-            case 6:
-                user.checkTableTime();
-                studentTableOption(user);
-            case 7:
-                studentMenu("student",user);
-                break;
-            default:
-                System.out.println("Wrong Entry");
-                studentTableOption(user);
-                break;
-        }
-    }
-    private void librarianMenu(String type,Librarian librarian){
-        if(librarian == null){
-            librarian = (Librarian) logIn(type);
-            if (librarian == null) {
-                System.out.println("Log in process is failed.");
-                mainMenu();
-                return;
-            }
-        }
-        System.out.println("\nLibrarian Menu\n");
-        System.out.println("1) Open your profile\n2) Book Option\n3) Table Option\n4) Exit");
-        Scanner sb = new Scanner(System.in);
-        int choice = sb.nextInt();
-
-        switch (choice){
-            case 1:
-                profileOption((User) librarian);
-                librarianMenu("librarian",librarian);
-                break;
-            case 2:
-                librarianBookOption(librarian);
-                break;
-            case 3:
-                librarianTableOption(librarian);
-                break;
-            case 4:
-                break;
-            default:
-                System.out.println("Wrong Entry");
-                librarianMenu(type,librarian);
-                break;
-        }
-
-    }
-    private void librarianBookOption(Librarian user){
-        System.out.println("\nBook Option Menu\n");
-        System.out.println("1) Search Book\n2) Add Book\n3) Remove Book\n4) Exit");
-        Scanner sb = new Scanner(System.in);
-        int choice = sb.nextInt();
-
-        switch (choice){
-            case 1:
-                user.searchBook();
-                librarianBookOption(user);
-                break;
-            case 2:
-                user.addBook();
-                librarianBookOption(user);
-                break;
-            case 3:
-                user.removeBook();
-                librarianBookOption(user);
-                break;
-            case 4:
-                librarianMenu("librarian",user);
-                break;
-            default:
-                System.out.println("Wrong Entry");
-                librarianBookOption(user);
-                break;
-        }
-    }
-    private void librarianTableOption(Librarian user){
-        System.out.println("\nTable Option Menu\n");
-        System.out.println("1) Show Table\n"+"2) Cancel Table Reservation\n3) Exit");
-        Scanner sb = new Scanner(System.in);
-        int choice = sb.nextInt();
-
-        switch (choice){
-            case 1:
-                user.showTable();
-                librarianTableOption(user);
-                break;
-            case 2:
-                user.cancelTableReservation();
-                librarianTableOption(user);
-            case 3:
-                librarianMenu("librarian",user);
-                break;
-            default:
-                System.out.println("Wrong Entry\n");
-                break;
-        }
-    }
-
-
-    //-----------------------------------------------------------------
-
-
-    public void signUp(){
-        int type;
-        Scanner sb = new Scanner(System.in);
-        System.out.println("1) Student\n2) Librarian\n3) Exit\n");
-        type = sb.nextInt();
-        switch (type){
-            case 1:
-                User newStudent = createUser(type);
-                if(newStudent == null){
-                    signUp();
-                }else{
-                    students.insert((Student) newStudent);
-                }
-                mainMenu();
-                break;
-            case 2:
-                User newLibrarian = createUser(type);
-                if(newLibrarian == null){
-                    signUp();
-                }else{
-                    librarians.add((Librarian) newLibrarian);
-                }
-                mainMenu();
-                break;
-            case 3:
-                mainMenu();
-                break;
-            default:
-                System.out.println("Wrong entry");
-                signUp();
-                break;
-        }
-    }
-
-    private User createUser(int type){
-        String name;
-        String surname;
-        String ID;
-        String password;
-        Scanner sb = new Scanner(System.in);
-        System.out.println("In case you want to leave menu, please write 'exit'.\n");
-
-        System.out.println(" Enter the name please ");
-        name = sb.next();
-        if (name.equals("exit")){
-            return null;
-        }
-
-        System.out.println(" Enter the surname please ");
-        surname = sb.next();
-        if (surname.equals("exit")){
-            return null;
-        }
-
-        System.out.println(" Enter the ID please");
-        ID = sb.next();
-        if (ID.equals("exit")){
-            return null;
-        }
-
-        System.out.println(" Enter the password please");
-        password = sb.next();
-        if (password.equals("exit")){
-            return null;
-        }
-
-        if(type == 1) {
-            return (User) new Student(name, surname, ID, password); //EXCHANGED PARAMETERS ID AND PASSWORD
-        }else{
-            return (User) new Librarian(name, surname, ID, password); //EXCHANGED PARAMETERS ID AND PASSWORD
-        }
-    }
-
-    public User logIn(String type){
-        User temp = IDControl(type,0);
-        if (temp == null){
-            return null;
-        }else{
-            boolean password = passwordControl(temp,0);
-
-            if (password){
-                return temp;
-            }else{
-                return null;
-            }
-        }
-    }
-
-    private User IDControl(String type,int i){
-        if(i == 4){
-            return null;
-        }
-
-        Scanner sb = new Scanner(System.in);
-        System.out.println(" Entry the ID please ");
-        String ID = sb.next();
-        int index = 0;
-
-        if (type.equals("student")){
-
-            SkipList.SLNode tempHead = students.getHead();
-            while (tempHead.hasNext()){
-                Student st = ((Student)tempHead.next().data);
-                if (st != null && st.getID().equals(ID)){
-                    return st;
-                }
-               tempHead = tempHead.next();
-            }
-
-        }else{
-            while (librarians.size()>index){
-                if (librarians.get(index).getID().equals(ID)){
-                    return  librarians.get(index);
-                }
-                index++;
-            }
-        }
-        System.out.println("Wrong ID. Your remaining ID retry: " +(4-i-1));
-        return IDControl(type,i+1);
-    }
-
-    private boolean passwordControl(User temp,int i){
-        Scanner sb = new Scanner(System.in);
-        System.out.println(" Enter password please ");
-        String password = sb.next();
-
-        if (i == 4){
-            return false;
-        }else{
-            if (temp.getPassword().equals(password)){
-                return true;
-            }else{
-                System.out.println(" Wrong password. Your remaining password retry:  " +(4-i-1));
-                return passwordControl(temp,i+1);
-            }
-        }
-    }
-
-}
->>>>>>> ef7685c87f7f3c53edd36145dce5760c05b9e9d1

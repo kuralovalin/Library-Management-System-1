@@ -10,6 +10,14 @@ public class QuickSort {
         quickSort(table, 0, table.length- 1);
 
     }
+
+    /**
+     * helper method of quick sort
+     * @param table table objects array
+     * @param first index of first element
+     * @param last index of last element
+     * @param <T> generic type
+     */
     private static <T extends Comparable<T>> void quickSort(T[] table, int first, int last) {
         if (first < last) { // There is data to be sorted.
             // Partition the table.

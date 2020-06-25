@@ -1,4 +1,4 @@
-import java.time.LocalDateTime;
+
 /**
  * abstract Inventory class which implements InventoryInterface interface
  */
@@ -16,7 +16,6 @@ public abstract class Inventory implements InventoryInterface{
      * Holds time of a book, table
      */
     private Integer time;
-
 
     /**
      * Default constructor
@@ -40,7 +39,7 @@ public abstract class Inventory implements InventoryInterface{
      */
     @Override
     public boolean isAvailable(){
-        return this.status.equals("reserved");
+        return this.status.equals("available");
     }
 
     /**
@@ -57,23 +56,42 @@ public abstract class Inventory implements InventoryInterface{
 
 
     /**
-     * Setters and getters
+     * Getter gets ID of the Book, table
+     * @return string value of ID
      */
     public String getID() {
         return ID;
     }
-    public void setID(String ID) {
-        this.ID = ID;
-    }
+    /**
+     * Setter sets ID of the Book, table
+     * @param ID value to be assigned
+     */
+    public void setID(String ID) { this.ID = ID; }
+    /**
+     * Getter gets status of the Book, table
+     * @return string value of status
+     */
     public String  getStatus() {
         return status;
     }
+    /**
+     * Setter sets status of the Book, table
+     * @param status value to be assigned
+     */
     public void setStatus(String status) {
         this.status = status;
     }
+    /**
+     * Getter gets time of the Book, table
+     * @return string value of time
+     */
     public Integer getTime() {
         return time;
     }
+    /**
+     * Setter sets time of the Book, table
+     * @param time value to be assigned
+     */
     public void setTime(Integer time) {
         this.time = time;
     }

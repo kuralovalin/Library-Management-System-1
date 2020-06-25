@@ -1,24 +1,32 @@
-<<<<<<< HEAD
+/**
+ * The interface Skip list ınterface.
+ *
+ * @param <E> the type parameter
+ */
 public interface SkipListInterface<E extends Comparable > {
+
     /**
-     * Removes given target from a Skip List.
+     * Remove boolean.
+     *
+     * @param target the target
+     * @return the boolean
      */
     public boolean remove(E target);
+
     /**
-     * Inserts given data to a Skip List.
+     * Insert boolean.
+     *
+     * @param data the data
+     * @return the boolean
      */
     public boolean insert(E data);
+
     /**
-     * Finds given data in a SkipList.
+     * Find e.
+     *
+     * @param data the data
+     * @return the e
      */
     public E find(E data);
 }
 
-=======
-public interface SkipListInterface<E extends Comparable > {
-    public boolean remove(E target);
-    public boolean insert(E data);
-    public E find(E data);
-}
-
->>>>>>> ef7685c87f7f3c53edd36145dce5760c05b9e9d1

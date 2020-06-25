@@ -9,14 +9,20 @@ public class Table extends Inventory implements Comparable {
     private int breakCounter;
 
     /**
-     * Constructor
+     * Default Constructor
      */
     public Table(){
         super();
         breakCounter = 0;
     }
 
-
+    /**
+     * Instantiates a new Table.
+     *
+     * @param id     the id
+     * @param status the status
+     * @param time   the time
+     */
     protected Table(String id, String status, Integer time) {
         super(id, status, time);
         breakCounter = 0;
@@ -30,7 +36,7 @@ public class Table extends Inventory implements Comparable {
         if(isAvailable())
             setStatus(newStatus);
         else
-            System.out.println("Table has already occupied");
+            System.out.println(User.ANSI_RED + "Table has already occupied" + User.ANSI_RESET);
     }
 
     /**
@@ -38,20 +44,8 @@ public class Table extends Inventory implements Comparable {
      */
     @Override
     public void updateTime() {
-        //setTime(getTime().plusMinutes(60));
+        setTime(getTime()-1);
     }
-
-
-    /**
-     * Setters and getters
-     */
-    public Integer getBreakCounter() {
-        return breakCounter;
-    }
-    public void setBreakCounter(Integer breakCounter) {
-        this.breakCounter = breakCounter;
-    }
-
 
 
     @Override
